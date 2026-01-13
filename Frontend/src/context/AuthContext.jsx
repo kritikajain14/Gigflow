@@ -1,16 +1,13 @@
 import { createContext, useState, useContext, useEffect, useCallback } from 'react'
-import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
-import { socket } from '../socket/socket';
-
+import { socket } from '../socket/socket'
+import api, { authService } from '../services/api'
 
 const AuthContext = createContext(null)
 
 export const useAuth = () => {
   const context = useContext(AuthContext)
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider')
-  }
+  if (!context) throw new Error('useAuth must be used within an AuthProvider')
   return context
 }
 
@@ -20,27 +17,23 @@ export const AuthProvider = ({ children }) => {
   const [error, setError] = useState(null)
   const navigate = useNavigate()
 
-
+  // Connect socket after login
   useEffect(() => {
-  if (user?.id) {
-    socket.connect(); // ✅ connect only after login
-    socket.emit('join-user-room', user.id);
-  }
-}, [user]);
-
+    if (user?.id) {
+      socket.connect()
+      socket.emit('join-user-room', user.id)
+    }
+  }, [user])
 
   const checkAuth = useCallback(async () => {
     try {
       setLoading(true)
-      const response = await axios.get('/api/auth/me', {
-        withCredentials: true
-      })
-      
+      const response = await authService.getMe()
       if (response.data.success) {
         setUser(response.data.user)
         setError(null)
       }
-    } catch (error) {
+    } catch (err) {
       setUser(null)
       setError('Session expired. Please login again.')
     } finally {
@@ -55,23 +48,17 @@ export const AuthProvider = ({ children }) => {
   const register = async (userData) => {
     try {
       setLoading(true)
-      const response = await axios.post('/api/auth/register', userData, {
-        withCredentials: true
-      })
-      
+      const response = await authService.register(userData)
       if (response.data.success) {
         setUser(response.data.user)
         setError(null)
         navigate('/')
         return { success: true }
       }
-    } catch (error) {
-      const message = error.response?.data?.message || 'Registration failed'
+    } catch (err) {
+      const message = err.response?.data?.message || 'Registration failed'
       setError(message)
-      return {
-        success: false,
-        message
-      }
+      return { success: false, message }
     } finally {
       setLoading(false)
     }
@@ -80,23 +67,17 @@ export const AuthProvider = ({ children }) => {
   const login = async (credentials) => {
     try {
       setLoading(true)
-      const response = await axios.post('/api/auth/login', credentials, {
-        withCredentials: true
-      })
-      
+      const response = await authService.login(credentials)
       if (response.data.success) {
         setUser(response.data.user)
         setError(null)
         navigate('/')
         return { success: true }
       }
-    } catch (error) {
-      const message = error.response?.data?.message || 'Login failed'
+    } catch (err) {
+      const message = err.response?.data?.message || 'Login failed'
       setError(message)
-      return {
-        success: false,
-        message
-      }
+      return { success: false, message }
     } finally {
       setLoading(false)
     }
@@ -104,31 +85,19 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      await axios.post('/api/auth/logout', {}, {
-        withCredentials: true
-      })
-      socket.disconnect();
+      await authService.logout()
+      socket.disconnect()
       setUser(null)
       setError(null)
       navigate('/login')
-    } catch (error) {
-      console.error('Logout error:', error)
+    } catch (err) {
+      console.error('Logout error:', err)
       setError('Logout failed')
     }
   }
 
-  const value = {
-    user,
-    loading,
-    error,
-    register,
-    login,
-    logout,
-    checkAuth
-  }
-
   return (
-    <AuthContext.Provider value={value}>
+    <AuthContext.Provider value={{ user, loading, error, register, login, logout, checkAuth }}>
       {children}
     </AuthContext.Provider>
   )

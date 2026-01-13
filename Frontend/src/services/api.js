@@ -1,12 +1,12 @@
 import axios from 'axios'
 
+const API = import.meta.env.VITE_API_URL // Render backend URL
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL + '/api',
-  withCredentials: true,
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  baseURL: API + '/api', // Append /api because backend routes are /api/auth, /api/gigs...
+  withCredentials: true, // Needed for cookies
 })
+
 
 // Request interceptor
 api.interceptors.request.use(
