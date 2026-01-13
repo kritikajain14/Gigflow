@@ -26,20 +26,22 @@ export const AuthProvider = ({ children }) => {
   }, [user])
 
   const checkAuth = useCallback(async () => {
-    try {
-      setLoading(true)
-      const response = await authService.getMe()
-      if (response.data.success) {
-        setUser(response.data.user)
-        setError(null)
-      }
-    } catch (err) {
+  try {
+    setLoading(true)
+    const response = await authService.getMe()
+
+    if (response.data.success) {
+      setUser(response.data.user)
+    } else {
       setUser(null)
-      setError('Session expired. Please login again.')
-    } finally {
-      setLoading(false)
     }
-  }, [])
+  } catch (err) {
+    setUser(null)
+  } finally {
+    setLoading(false)
+  }
+}, [])
+
 
   useEffect(() => {
     checkAuth()
