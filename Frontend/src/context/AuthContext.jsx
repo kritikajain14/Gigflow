@@ -47,6 +47,11 @@ useEffect(() => {
   localStorage.setItem('token', response.data.token);
   setUser(response.data.user);
 
+  return {
+    success: true,
+    user: response.data.user
+  };
+
   navigate('/');
 };
 
@@ -56,6 +61,11 @@ const login = async (credentials) => {
 
   localStorage.setItem('token', response.data.token);
   setUser(response.data.user);
+
+  return {
+    success: true,
+    user: response.data.user
+  };
 
   navigate('/');
 };
