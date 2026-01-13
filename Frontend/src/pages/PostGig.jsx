@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
+// import axios from 'axios'
 import { motion } from 'framer-motion'
 import { useNotification } from '../context/NotificationContext'
 import { FiType, FiFileText, FiDollarSign, FiUpload, FiAlertCircle, FiGlobe, FiCalendar, FiTag } from 'react-icons/fi'
+import api from '../services/api'
 
 export default function PostGig() {
   const [formData, setFormData] = useState({
@@ -102,7 +103,7 @@ export default function PostGig() {
     setLoading(true)
 
     try {
-      const response = await axios.post('/api/gigs', {
+      const response = await api.post('/api/gigs', {
         ...formData,
         budget: parseFloat(formData.budget)
       }, {
