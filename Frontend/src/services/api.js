@@ -4,20 +4,18 @@ const API = import.meta.env.VITE_API_URL // Render backend URL
 
 const api = axios.create({
   baseURL: API + '/api', // Append /api because backend routes are /api/auth, /api/gigs...
-  withCredentials: true, // Needed for cookies
+  // withCredentials: true, // Needed for cookies
 })
 
 
 // Request interceptor
-api.interceptors.request.use(
-  (config) => {
-    // You can add auth tokens here if needed
-    return config
-  },
-  (error) => {
-    return Promise.reject(error)
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
   }
-)
+  return config;
+});
 
 // Response interceptor
 api.interceptors.response.use(

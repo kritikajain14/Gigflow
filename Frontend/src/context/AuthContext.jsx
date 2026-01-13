@@ -25,22 +25,15 @@ export const AuthProvider = ({ children }) => {
     }
   }, [user])
 
-  const checkAuth = useCallback(async () => {
+const checkAuth = useCallback(async () => {
   try {
-    setLoading(true)
-    const response = await authService.getMe()
-
-    if (response.data.success) {
-      setUser(response.data.user)
-    } else {
-      setUser(null)
-    }
-  } catch (err) {
-    setUser(null)
-  } finally {
-    setLoading(false)
+    const res = await authService.getMe();
+    setUser(res.data.user);
+  } catch {
+    setUser(null);
   }
-}, [])
+}, []);
+
 
 
   useEffect(() => {
@@ -48,55 +41,30 @@ export const AuthProvider = ({ children }) => {
   }, [checkAuth])
 
   const register = async (userData) => {
-    try {
-      setLoading(true)
-      const response = await authService.register(userData)
-      if (response.data.success) {
-        setUser(response.data.user)
-        setError(null)
-        navigate('/')
-        return { success: true }
-      }
-    } catch (err) {
-      const message = err.response?.data?.message || 'Registration failed'
-      setError(message)
-      return { success: false, message }
-    } finally {
-      setLoading(false)
-    }
-  }
+  const response = await authService.register(userData);
 
-  const login = async (credentials) => {
-    try {
-      setLoading(true)
-      const response = await authService.login(credentials)
-      if (response.data.success) {
-        setUser(response.data.user)
-        setError(null)
-        navigate('/')
-        return { success: true }
-      }
-    } catch (err) {
-      const message = err.response?.data?.message || 'Login failed'
-      setError(message)
-      return { success: false, message }
-    } finally {
-      setLoading(false)
-    }
-  }
+  localStorage.setItem('token', response.data.token);
+  setUser(response.data.user);
+
+  navigate('/');
+};
+
+
+const login = async (credentials) => {
+  const response = await authService.login(credentials);
+
+  localStorage.setItem('token', response.data.token);
+  setUser(response.data.user);
+
+  navigate('/');
+};
+
 
   const logout = async () => {
-    try {
-      await authService.logout()
-      socket.disconnect()
-      setUser(null)
-      setError(null)
-      navigate('/login')
-    } catch (err) {
-      console.error('Logout error:', err)
-      setError('Logout failed')
-    }
-  }
+  localStorage.removeItem('token');
+  setUser(null);
+  navigate('/login');
+};
 
   return (
     <AuthContext.Provider value={{ user, loading, error, register, login, logout, checkAuth }}>
