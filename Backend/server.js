@@ -58,7 +58,7 @@ const io = new Server(httpServer, {
 });
 
 // Middleware
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
 
