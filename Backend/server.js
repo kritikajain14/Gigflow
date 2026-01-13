@@ -34,8 +34,12 @@ const corsOptions = {
       callback(new Error('Not allowed by CORS'));
     }
   },
-  credentials: true,
-  methods: ['GET','POST','PUT','PATCH','DELETE','OPTIONS']
+  // credentials: true,
+  // methods: ['GET','POST','PUT','PATCH','DELETE','OPTIONS']
+  methods: ['GET','POST','PUT','PATCH','DELETE','OPTIONS'],
+  allowedHeaders: ['Content-Type','Authorization'],
+  credentials: true,   // allow cookies
+  preflightContinue: false
 };
 
 // Socket.IO
@@ -45,6 +49,8 @@ const io = new Server(httpServer, {
 
 // Middleware
 app.use(cors(corsOptions));
+// Handle OPTIONS preflight globally
+app.options('*', cors(corsOptions))
 app.use(express.json());
 app.use(cookieParser());
 
