@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate, useLocation } from 'react-router-dom'
-import axios from 'axios'
+// import axios from 'axios'
+import api from '../services/api'
 import { motion } from 'framer-motion'
 import { useAuth } from '../context/AuthContext'
 import { useNotification } from '../context/NotificationContext'
