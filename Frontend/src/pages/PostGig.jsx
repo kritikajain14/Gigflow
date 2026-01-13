@@ -107,7 +107,7 @@ export default function PostGig() {
         ...formData,
         budget: parseFloat(formData.budget)
       }, {
-        withCredentials: true
+        // withCredentials: true
       })
 
       if (response.data.success) {

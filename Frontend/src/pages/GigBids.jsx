@@ -44,14 +44,14 @@ export default function GigBids() {
     try {
       setLoading(true)
       const response = await api.get(`/bids/${gigId}`, {
-        withCredentials: true
+      
       })
 
       if (response.data.success) {
         setBids(response.data.bids)
         if (response.data.bids.length > 0) {
   const gigResponse = await api.get(`/gigs/${gigId}`, {
-    withCredentials: true
+    // withCredentials: true
   })
           if (gigResponse.data.success) {
             setGig(gigResponse.data.gig)
@@ -76,7 +76,7 @@ export default function GigBids() {
       const response = await api.patch(
         `/bids/${bidId}/hire`,
         {},
-        { withCredentials: true }
+        // { withCredentials: true }
       )
 
       if (response.data.success) {

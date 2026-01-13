@@ -43,7 +43,7 @@ export default function MyGigs() {
     try {
       setLoading(true)
       const response = await api.get('/gigs/my-gigs', {
-        withCredentials: true
+        // withCredentials: true
       })
 
       if (response.data.success) {
@@ -71,7 +71,7 @@ export default function MyGigs() {
 
     try {
       await api.delete(`/gigs/${gigId}`, {
-        withCredentials: true
+        // withCredentials: true
       })
       showNotification('Gig deleted successfully', 'success')
       fetchMyGigs()

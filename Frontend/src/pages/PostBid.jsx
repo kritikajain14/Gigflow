@@ -51,7 +51,7 @@ export default function PostBid() {
         } else {
           // Otherwise fetch from API
           const response = await api.get(`/gigs/${gigId}`, {
-            withCredentials: true
+            // withCredentials: true
           })
           if (response.data.success) {
             setGig(response.data.gig)
@@ -62,7 +62,7 @@ export default function PostBid() {
 
         // Check if user already has a bid on this gig
         const bidResponse = await api.get('/bids/my-bids', {
-          withCredentials: true
+          // withCredentials: true
         })
         
         if (bidResponse.data.success) {
@@ -181,7 +181,7 @@ export default function PostBid() {
       }
 
       const response = await api.post('/bids', bidData, {
-        withCredentials: true
+        // withCredentials: true
       })
 
       if (response.data.success) {

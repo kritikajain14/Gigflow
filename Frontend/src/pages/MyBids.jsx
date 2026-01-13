@@ -41,7 +41,7 @@ export default function MyBids() {
     try {
       setLoading(true)
       const response = await api.get('/bids/my-bids', {
-        withCredentials: true
+        // withCredentials: true
       })
 
       if (response.data.success) {
@@ -69,7 +69,7 @@ export default function MyBids() {
 
     try {
       await api.delete(`/bids/${bidId}`, {
-        withCredentials: true
+        // withCredentials: true
       })
       showNotification('Bid withdrawn successfully', 'success')
       fetchMyBids()
