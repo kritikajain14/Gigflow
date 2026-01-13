@@ -1,29 +1,31 @@
 import jwt from 'jsonwebtoken';
 
 export const protect = (req, res, next) => {
-  const authHeader = req.headers.authorization;
-
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({
-      success: false,
-      message: 'Not authorized'
-    });
-  }
-
-  const token = authHeader.split(' ')[1];
-
   try {
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({
+        success: false,
+        message: 'Not authorized, no token',
+      });
+    }
+
+    const token = authHeader.split(' ')[1];
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
     req.user = {
       id: decoded.userId,
       email: decoded.email,
-      name: decoded.name
+      name: decoded.name,
     };
+
     next();
-  } catch {
+  } catch (error) {
+    console.error('Auth error:', error);
     return res.status(401).json({
       success: false,
-      message: 'Token invalid'
+      message: 'Not authorized, token failed',
     });
   }
 };
