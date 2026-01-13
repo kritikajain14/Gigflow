@@ -29,14 +29,15 @@ const checkAuth = useCallback(async () => {
   try {
     const res = await authService.getMe();
     setUser(res.data.user);
-  } catch {
+  } catch (error) {
+    console.error('Auth check failed');
     setUser(null);
+  } finally {
+    setLoading(false); // ✅ THIS FIXES INFINITE LOADING
   }
 }, []);
 
-
-
-  useEffect(() => {
+useEffect(() => {
     checkAuth()
   }, [checkAuth])
 
