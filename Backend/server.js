@@ -1,7 +1,7 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
-import cookieParser from 'cookie-parser';
+// import cookieParser from 'cookie-parser';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import dotenv from 'dotenv';
@@ -18,49 +18,28 @@ app.set('trust proxy', 1);
 
 const httpServer = createServer(app);
 
-// // Allowed origins
-// const allowedOrigins = [
-//   'http://localhost:5173',
-//   process.env.FRONTEND_URL
-// ].filter(Boolean);
-
-// // CORS config
-// const corsOptions = {
-//   origin: function (origin, callback) {
-//     console.log('Incoming request from origin:', origin) // debug
-//     if (!origin || allowedOrigins.includes(origin)) {
-//       callback(null, true);
-//     } else {
-//       callback(new Error('Not allowed by CORS'));
-//     }
-//   },
-//   // credentials: true,
-//   // methods: ['GET','POST','PUT','PATCH','DELETE','OPTIONS']
-//   methods: ['GET','POST','PUT','PATCH','DELETE','OPTIONS'],
-//   allowedHeaders: ['Content-Type','Authorization'],
-//   credentials: true   // allow cookies
-  
-// };
-
+// CORS configuration
 app.use(cors({
   origin: 'https://gigflow-pearl.vercel.app',
-  credentials: true,
-  methods: ['GET','POST','PUT','PATCH','DELETE','OPTIONS']
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  methods: ['GET','POST','PUT','PATCH','DELETE','OPTIONS'],
+  credentials: false
 }));
 
 // Socket.IO
 const io = new Server(httpServer, {
    cors: {
     origin: 'https://gigflow-pearl.vercel.app',
-    credentials: true,
-    methods: ['GET','POST','PUT','PATCH','DELETE','OPTIONS']
+    allowedHeaders: ['Authorization'],
+    methods: ['GET','POST','PUT','PATCH','DELETE','OPTIONS'],
+    credentials: false
    }
 });
 
 // Middleware
 // app.use(cors(corsOptions));
 app.use(express.json());
-app.use(cookieParser());
+// app.use(cookieParser());
 
 app.use((req, res, next) => {
   req.io = io;
