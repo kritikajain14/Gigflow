@@ -10,26 +10,39 @@ import authRoutes from './routes/auth.routes.js';
 import gigRoutes from './routes/gig.routes.js';
 import bidRoutes from './routes/bid.routes.js';
 import { setupSocket } from './socket/socket.js';
-import path from 'path';
 
 dotenv.config({ path: './config/config.env' });
 
 const app = express();
+app.set('trust proxy', 1);
+
 const httpServer = createServer(app);
 
-// Socket.IO setup
+// Allowed origins
+const allowedOrigins = [
+  'http://localhost:5173',
+  process.env.FRONTEND_URL
+].filter(Boolean);
+
+// CORS config
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true
+};
+
+// Socket.IO
 const io = new Server(httpServer, {
-  cors: {
-    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
-    credentials: true
-  }
+  cors: corsOptions
 });
 
 // Middleware
-app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
-  credentials: true
-}));
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
 
@@ -48,16 +61,13 @@ app.get('/api/health', (req, res) => {
   res.status(200).json({ status: 'OK', message: 'GigFlow API is running' });
 });
 
-// MongoDB connection
+// MongoDB
 mongoose.connect(process.env.MONGODB_URI)
-.then(() => console.log('MongoDB connected successfully'))
-.catch((err) => console.error('MongoDB connection error:', err));
+  .then(() => console.log('MongoDB connected'))
+  .catch(err => console.error('MongoDB error:', err));
 
-// Setup Socket.IO
+// Socket setup
 setupSocket(io);
-
-console.log("JWT_SECRET:", process.env.JWT_SECRET);
-
 
 const PORT = process.env.PORT || 3000;
 httpServer.listen(PORT, () => {
