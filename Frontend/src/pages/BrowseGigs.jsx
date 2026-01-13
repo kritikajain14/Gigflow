@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import axios from 'axios'
+// import axios from 'axios'
+import api from '../services/api'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAuth } from '../context/AuthContext'
 import { useNotification } from '../context/NotificationContext'
@@ -63,7 +64,7 @@ export default function BrowseGigs() {
         ...(budgetFilter !== 'all' && { budget: budgetFilter })
       }
 
-      const response = await axios.get('/api/gigs', { params })
+      const response = await api.get('/gigs', { params })
       
       if (response.data.success) {
         setGigs(response.data.gigs)

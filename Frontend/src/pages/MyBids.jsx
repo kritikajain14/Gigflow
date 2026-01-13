@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import axios from 'axios'
+// import axios from 'axios'
 import { motion } from 'framer-motion'
+import api from '../services/api'
 import { useNotification } from '../context/NotificationContext'
 import {
   FiBriefcase,
@@ -18,6 +19,7 @@ import {
   FiMessageSquare,
   FiUser
 } from 'react-icons/fi'
+import api from '../services/api'
 
 export default function MyBids() {
   const [bids, setBids] = useState([])
@@ -39,7 +41,7 @@ export default function MyBids() {
   const fetchMyBids = async () => {
     try {
       setLoading(true)
-      const response = await axios.get('/api/bids/my-bids', {
+      const response = await api.get('/bids/my-bids', {
         withCredentials: true
       })
 
@@ -67,7 +69,7 @@ export default function MyBids() {
     if (!window.confirm(`Are you sure you want to withdraw your bid for "${gigTitle}"?`)) return
 
     try {
-      await axios.delete(`/api/bids/${bidId}`, {
+      await api.delete(`/bids/${bidId}`, {
         withCredentials: true
       })
       showNotification('Bid withdrawn successfully', 'success')

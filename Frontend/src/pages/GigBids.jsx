@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import axios from 'axios'
+// import axios from 'axios'
 import { motion } from 'framer-motion'
+import api from '../services/api'
 import { useNotification } from '../context/NotificationContext'
 import {
   FiUser,
@@ -22,6 +23,7 @@ import {
   FiClock,
   FiAward
 } from 'react-icons/fi'
+import api from '../services/api'
 
 export default function GigBids() {
   const { gigId } = useParams()
@@ -42,14 +44,14 @@ export default function GigBids() {
   const fetchBids = async () => {
     try {
       setLoading(true)
-      const response = await axios.get(`/api/bids/${gigId}`, {
+      const response = await api.get(`/bids/${gigId}`, {
         withCredentials: true
       })
 
       if (response.data.success) {
         setBids(response.data.bids)
         if (response.data.bids.length > 0) {
-  const gigResponse = await axios.get(`/api/gigs/${gigId}`, {
+  const gigResponse = await api.get(`/gigs/${gigId}`, {
     withCredentials: true
   })
           if (gigResponse.data.success) {
@@ -72,8 +74,8 @@ export default function GigBids() {
     setHiring(bidId)
 
     try {
-      const response = await axios.patch(
-        `/api/bids/${bidId}/hire`,
+      const response = await api.patch(
+        `/bids/${bidId}/hire`,
         {},
         { withCredentials: true }
       )

@@ -50,7 +50,7 @@ export default function PostBid() {
           setGig(location.state.gig)
         } else {
           // Otherwise fetch from API
-          const response = await axios.get(`/api/gigs/${gigId}`, {
+          const response = await api.get(`/gigs/${gigId}`, {
             withCredentials: true
           })
           if (response.data.success) {
@@ -61,7 +61,7 @@ export default function PostBid() {
         }
 
         // Check if user already has a bid on this gig
-        const bidResponse = await axios.get('/api/bids/my-bids', {
+        const bidResponse = await api.get('/bids/my-bids', {
           withCredentials: true
         })
         
@@ -180,7 +180,7 @@ export default function PostBid() {
         revisions: parseInt(formData.revisions)
       }
 
-      const response = await axios.post('/api/bids', bidData, {
+      const response = await api.post('/bids', bidData, {
         withCredentials: true
       })
 

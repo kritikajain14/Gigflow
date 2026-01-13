@@ -103,7 +103,7 @@ export default function PostGig() {
     setLoading(true)
 
     try {
-      const response = await api.post('/api/gigs', {
+      const response = await api.post('/gigs', {
         ...formData,
         budget: parseFloat(formData.budget)
       }, {

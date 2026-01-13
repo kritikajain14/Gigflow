@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import axios from 'axios'
+// import axios from 'axios'
 import { motion } from 'framer-motion'
+import api from '../services/api'
 import { useNotification } from '../context/NotificationContext'
 import {
   FiEye,
@@ -41,7 +42,7 @@ export default function MyGigs() {
   const fetchMyGigs = async () => {
     try {
       setLoading(true)
-      const response = await axios.get('/api/gigs/my-gigs', {
+      const response = await api.get('/gigs/my-gigs', {
         withCredentials: true
       })
 
@@ -69,7 +70,7 @@ export default function MyGigs() {
     if (!window.confirm(`Are you sure you want to delete "${gigTitle}"? This action cannot be undone.`)) return
 
     try {
-      await axios.delete(`/api/gigs/${gigId}`, {
+      await api.delete(`/gigs/${gigId}`, {
         withCredentials: true
       })
       showNotification('Gig deleted successfully', 'success')
